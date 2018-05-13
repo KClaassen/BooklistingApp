@@ -20,7 +20,9 @@ import java.util.List;
 
 public class QueryUtils {
 
-    /** Tag for the log messages */
+    /**
+     * Tag for the log messages
+     */
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
     /**
@@ -152,7 +154,7 @@ public class QueryUtils {
 
             // Extract the JSONArray associated with the key called "features",
             // which represents a list of features (or books).
-            JSONArray bookArray = baseJsonResponse.getJSONArray("features");
+            JSONArray bookArray = baseJsonResponse.getJSONArray("items");
 
             // For each book in the bookArray, create an {@link Book} object
             for (int i = 0; i < bookArray.length(); i++) {
@@ -163,23 +165,43 @@ public class QueryUtils {
                 // For a given book, extract the JSONObject associated with the
                 // key called "properties", which represents a list of all properties
                 // for that book.
-                JSONObject properties = currentBook.getJSONObject("properties");
+                JSONObject properties = currentBook.getJSONObject("volumeInfo");
 
                 // Extract the value for the key called "title"
                 String title = properties.getString("title");
 
+                // For a given book, extract the JSONObject associated with the
+                // key called "volumeInfo", which represents a list of all properties
+                // for that book. + [authors] list
+                JSONObject volumeInfo = currentBook.getJSONObject("volumeInfo");
+
                 // Extract the value for the key called "author"
-                String authors = properties.getString("authors");
+                String author;
+
+                // Check if JSONArray exist
+                if (volumeInfo.has("authors")) {
+                    JSONArray authors = volumeInfo.getJSONArray("authors");
+                    Log.println(Log.INFO, LOG_TAG, String.valueOf(authors));
+
+                    // Check JSONArray Returns true if this object has no mapping for name or if it has a mapping whose value is NULL
+                    if (!volumeInfo.isNull("authors")) {
+                        // Get 1st element
+                        author = (String) authors.get(0);
+                    } else {
+                        // assign info about missing info about author
+                        author = "*** unknown author ***";
+                    }
+                } else {
+                    // assign info about missing info about author
+                    author = "*** missing info of authors ***";
+                }
 
                 // Extract the value for the key called "des"
                 String description = properties.getString("description");
 
-                // Extract the value for the key called "url"
-                String url = properties.getString("url");
-
                 // Create a new {@link Book} object with the title, author, description,
                 // and url from the JSON response.
-                Book book = new Book(title, authors, description, url);
+                Book book = new Book(title, author, description);
 
                 // Add the new {@link Book} to the list of books.
                 books.add(book);

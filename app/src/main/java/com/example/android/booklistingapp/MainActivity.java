@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,14 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements LoaderCallbacks<List<Book>>{
+        implements LoaderCallbacks<List<Book>> {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
     /**
      * URL for Book data from the Google books API
      */
-    private static final String USGS_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=search+terms&maxResults=10";
+    private static final String USGS_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=android";
 
     /**
      * Constant value for the book loader ID. We can choose any integer.
@@ -43,11 +45,35 @@ public class MainActivity extends AppCompatActivity
      */
     private TextView mEmptyStateTextView;
 
+    /**
+     * The keyword entered for book search
+     */
+    String mKeyword;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final EditText editText = findViewById(R.id.editText);
+        Button searchButton = findViewById(R.id.searchButton);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mKeyword = editText.getText().toString();
+                searchBooks();
+            }
+        });
+
+        private static void searchBooks() {
+            BookLoader bookListTask = new BookLoader(this, this);
+            bookListTask.execute(mKeyword);
+            Log.e("searchBooks", "is working");
+
+        }
 
 
         // Find a reference to the {@link ListView} in the layout
@@ -124,5 +150,4 @@ public class MainActivity extends AppCompatActivity
         // Loader reset, so we can clear out our existing data.
         mAdapter.clear();
     }
-
 }

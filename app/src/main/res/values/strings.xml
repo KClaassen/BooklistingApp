@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Book listing App</string>
+    <string name="search_view">Search here...</string>
     <!-- Text to display in the list when there are no earthquakes [CHAR LIMIT=NONE] -->
     <string name="no_books">No books found.</string>
     <!-- Error message when there is no internet connectivity [CHAR LIMIT=NONE] -->
