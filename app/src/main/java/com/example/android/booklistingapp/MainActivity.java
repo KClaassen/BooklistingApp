@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity
                 mKeyword = editText.getText().toString();
                 searchBooks();
             }
-        });
+        }
 
         private static void searchBooks() {
             BookLoader bookListTask = new BookLoader(this, this);
@@ -150,4 +150,6 @@ public class MainActivity extends AppCompatActivity
         // Loader reset, so we can clear out our existing data.
         mAdapter.clear();
     }
+
+
 }
